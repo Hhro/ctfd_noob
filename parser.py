@@ -1,14 +1,14 @@
 import ctfd
 import requests
+import utils
 from bs4 import BeautifulSoup
-from utils import get_html
 
-def parse_CTFd_sitemap(CTFd):
-    home = CTFd.base_url
+def parse_CTFd_sitemap(base_url):
+    home = base_url
     urls = set()
     other_sites = set()
 
-    home_html = get_html(home)
+    home_html = utils.get_html(home)
     soup = BeautifulSoup(home_html, 'html.parser')
 
     for link in soup.findAll("a"):
@@ -23,25 +23,15 @@ def parse_CTFd_sitemap(CTFd):
     
     return urls,other_sites
 
-def prepare_register(CTFd):
-    register_url = CTFd.base_url+CTFd.endpoints['register']
+def prepare_register(register_url):
     form={}
-    nonce=''
-    session=''
+    ssid, nonce = utils.get_ssid_nonce(register_url)
 
     resp = requests.get(register_url)
-    session = resp.cookies['session']
-
     soup = BeautifulSoup(resp.text,'html.parser')
 
     for required in soup.findAll('input'):
-        if required.attrs['name'] == 'nonce':
-            nonce = required.attrs['value']
-        else:
+        if required.attrs['name'] != 'nonce':
             form.update({required.attrs['name']:''})
     
-    return form, nonce, session
-
-
-
-
+    return form, nonce, ssid
