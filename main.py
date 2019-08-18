@@ -8,5 +8,3 @@ ctf.get_CTFd_endpoints()
 player = User(ctf)
 player.login()
 ctf.challenges=player.get_challenges()
-
-print(ctf.challenges)

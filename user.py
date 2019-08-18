@@ -66,7 +66,7 @@ class User(object):
             return False
 
     def get_challenges(self):
-        print("Get challenge info")
+        print("Get challenge meta info")
         challenges = {}
 
         if self.session == '':
@@ -78,8 +78,30 @@ class User(object):
 
         if resp.status_code==200:
             print("Done.")
-            challenges = json.loads(resp.text)
-            return challenges
+            challenges = json.loads(resp.text)['data']
+
+            print("Processing...")
+            processed = {}
+            for chall in challenges:
+                del(chall['template'])
+                del(chall['script'])
+                del(chall['type'])
+                processed.update({chall['id']: {key: chall[key] for key in filter(lambda x : x!='id',chall)}})
+            print("Done")
+
+            print("Get challenge specific info.(You may need to wait)")
+            for chall_id in processed.keys():
+                resp=requests.get(challenges_endpoint+'/'+str(chall_id),cookies={"session":self.session})
+                chall_info = json.loads(resp.text)['data']
+
+                processed[chall_id]['files']=chall_info['files']
+                processed[chall_id]['description']=chall_info['description']
+                processed[chall_id]['hint']=chall_info['hints']
+                processed[chall_id]['solves']=chall_info['solves']
+
+            print("Merge complete")
+
+            return processed
         else:
             print("Something wrong...")
             print(resp.text)
