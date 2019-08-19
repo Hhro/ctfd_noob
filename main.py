@@ -8,7 +8,12 @@ ctf.get_CTFd_endpoints()
 
 player = User(ctf)
 player.login()
+
+input("Enter anything after validating your Email")
+
+player.create_team()
 ctf.challenges=player.get_challenges()
 
-downloader = Manager(ctf,player)
-downloader.download_all_challenges_files()
+manager = Manager(ctf,player)
+manager.download_all_challenges_files()
+manager.add_all_challenges_description()

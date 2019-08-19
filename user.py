@@ -22,8 +22,6 @@ class User(object):
         register_form['nonce'] = nonce
 
         resp = requests.post(register_url,cookies={'session':ssid},data=register_form)
-        resp2 = requests.post("http://httpbin.org/post",cookies={'session':ssid},data=register_form)
-        print(resp2.text)
         
         if "confirmation" in resp.text:
             print("Register success.")
@@ -107,4 +105,25 @@ class User(object):
         else:
             print("Something wrong...")
             print(resp.text)
+            return False
+    
+    def create_team(self):
+        print("[Create team]")
+        create_team_url = self.ctfd.base_url + self.ctfd.endpoints['teams'] + '/new'
+
+        if self.session == '':
+            self.login()
+
+        team_name = input("team name: ")
+        team_pw = input("team password: ")
+        _, nonce = utils.get_ssid_nonce(create_team_url,self.session)
+        login_form = {"name":team_name,"password":team_pw,"nonce":nonce}
+
+        resp=requests.post(create_team_url,cookies={"session":self.session},data=login_form)
+        
+        if resp.status_code == 200:
+            print("[Create team]Done")
+            return True
+        else:
+            print("[Create team]Something wrong...")
             return False

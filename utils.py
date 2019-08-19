@@ -12,9 +12,10 @@ def get_cookies(url):
     resp = requests.get(url)
     return resp.cookies
 
-def get_ssid_nonce(url):
-    resp = requests.get(url)
-    ssid = resp.cookies['session']
+def get_ssid_nonce(url,ssid=''):
+    if ssid == '':
+        resp = requests.get(url)
+        ssid = resp.cookies['session']
 
     resp = requests.get(url,cookies={"session":ssid})
     soup = BeautifulSoup(resp.text,'html.parser')
