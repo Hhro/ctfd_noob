@@ -1,7 +1,5 @@
 # CTFd_noob
 
----
-
 ## Description
 
 CTFd와 관련된 유틸제공
@@ -69,7 +67,7 @@ ctf.get_CTFd_sitemap()
 ctf.get_CTFd_endpoints()
 
 player = User(ctf)
-player.login()
+player.login(로
 
 input("Enter anything after validating your Email")
 
@@ -87,4 +85,4 @@ manager.add_all_challenges_description()
 1. Project structure 갖추기
 2. Docs 쓰기
 3. Bot만들기(추가 챌린지, 공지 체크 후 디스코드 앱으로 ㄱ)
-4. Exploit manager 기능(ctf, challenge, user별로 exploit수집)
+4. 커맨드라인 인터페이스 갖추기
