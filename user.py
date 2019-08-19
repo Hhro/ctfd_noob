@@ -3,6 +3,7 @@ import json
 import accounts
 import parser
 import utils
+from pathlib import Path
 
 class User(object):
     def __init__(self,ctfd):
@@ -66,6 +67,18 @@ class User(object):
     def get_challenges(self):
         print("Get challenge meta info")
         challenges = {}
+        save_dir = self.ctfd.loc
+        save_path = self.ctfd.loc / "challenges.json"
+
+        if save_path.exists():
+            print("Challenge are already loaded once")
+            print("Do you need to update it?(y/n)")
+            choice = input("> ")
+            
+            if choice == "n":
+                with open(str(save_path)) as challenges_json:
+                    challenges = json.load(challenges_json)
+                return challenges
 
         if self.session == '':
             self.login()
@@ -86,11 +99,13 @@ class User(object):
                 del(chall['template'])
                 del(chall['script'])
                 del(chall['type'])
-                processed.update({chall['id']: {key: chall[key] for key in filter(lambda x : x!='id',chall)}})
+                processed.update({chall['id']: {str(key): chall[key] for key in filter(lambda x : x!='id',chall)}})
             print("Done")
 
             print("Get challenge specific info.(You may need to wait)")
-            for chall_id in processed.keys():
+            challs_total = len(processed.keys())
+            for idx,chall_id in enumerate(processed.keys()):
+                utils.printProgress(idx+1,challs_total,'Progress:',('{}/{}'.format(idx+1,challs_total)),1,50)
                 resp=requests.get(challenges_endpoint+'/'+str(chall_id),cookies={"session":self.session})
                 chall_info = json.loads(resp.text)['data']
 
@@ -98,8 +113,11 @@ class User(object):
                 processed[chall_id]['description']=chall_info['description']
                 processed[chall_id]['hint']=chall_info['hints']
                 processed[chall_id]['solves']=chall_info['solves']
+            print("Done")
 
-            print("Merge complete")
+            print("Save challenges info into file")
+            utils.save_json_into_file(processed,save_dir,"challenges.json","new")
+            print("Done")
 
             return processed
         else:

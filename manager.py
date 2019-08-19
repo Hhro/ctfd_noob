@@ -4,10 +4,9 @@ from pathlib import Path
 from urllib.parse import urljoin
 
 class Manager(object):
-    def __init__(self,ctfd,user):
+    def __init__(self,ctfd,user,loc=''):
         self.ctfd=ctfd
         self.user=user
-        self.loc=''
     
     def download_all_challenges_files(self):
         print("Download challenges files")
@@ -15,15 +14,11 @@ class Manager(object):
         ssid = self.user.session
         header = "Cookie: session={}".format(ssid)
         challenges = self.ctfd.challenges
+        ctf_dir = self.ctfd.loc
 
-        if self.loc == '':
-            base_dir = Path.cwd() / self.ctfd.name
-        else:
-            base_dir = Path(loc) /self.ctfd.name
-
-        for idx,chall_id in enumerate(challenges.keys()):
+        for chall_id in challenges.keys():
             chall = challenges[chall_id]
-            chall_path = base_dir / chall['category'] / chall['name']
+            chall_path = ctf_dir / chall['category'] / chall['name']
             chall_path.mkdir(parents=True,exist_ok=True)
 
             if chall['files'] == ['']:
@@ -40,15 +35,11 @@ class Manager(object):
     def add_all_challenges_description(self):
         print("Add descriptions of challenges")
         challenges = self.ctfd.challenges
-
-        if self.loc == '':
-            base_dir = Path.cwd() / self.ctfd.name
-        else:
-            base_dir = Path(loc) /self.ctfd.name
+        ctf_dir = self.ctfd.loc
         
         for chall_id in challenges.keys():
             chall = challenges[chall_id]
-            chall_path = base_dir / chall['category'] / chall['name']
+            chall_path = ctf_dir / chall['category'] / chall['name']
             chall_path.mkdir(parents=True,exist_ok=True)
             chall_path.touch("desc.md")
 
@@ -57,7 +48,7 @@ class Manager(object):
             desc = "# {} \n\n---\n\n".format(chall['name'])
             desc += "Solves: {}\n\n".format(chall['solves'])
             desc += "{}".format(chall['description'])
-            chall_desc_path.write_text(desc)
+            chall_desc_path.write_text(desc,encoding="utf-8")
         
         print("Done")
         return True

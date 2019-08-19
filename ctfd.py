@@ -1,5 +1,6 @@
 import requests
 import parser
+from pathlib import Path
 from user import User
 
 class CTFd(object):
@@ -7,6 +8,7 @@ class CTFd(object):
         self.base_url = base_url
         self.name=name
         self.urls=set('/')
+        self.loc=Path.cwd() / 'ctfs' / name
         self.other_sites=set()
         self.endpoints={}
         self.challenges={}
@@ -33,10 +35,21 @@ class CTFd(object):
             elif 'users' in url:
                 self.endpoints.update({"users":url})
     
-    
+    def get_categories(self):
+        challs = self.challenges
+        categories = set()
 
-
-
-
-
+        for chall_id in challs.keys():
+            chall = challs[chall_id]
+            categories.add(chall['category'])
         
+        return list(categories)
+    
+    def get_challenges(self,filters={}):
+        challs = self.challenges
+        filtered = challs
+        
+        for prop in filters.keys():
+            filtered = {chall_id: chall for chall_id,chall in filtered.items() if chall[prop] == filters[prop]}
+
+        return filtered
