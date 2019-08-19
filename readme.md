@@ -2,7 +2,7 @@
 
 ## Description
 
-CTFd와 관련된 유틸제공
+CTFd플랫폼으로 진행되는 CTF에 관련된 유틸제공
 
 ---
 
@@ -30,7 +30,7 @@ Install as python module is not supported yet.
 
 ## Examples
 
-Documentation will be uploaded(maybe).
+Documents will be uploaded(maybe).
 
 ### Download challenges files
 
