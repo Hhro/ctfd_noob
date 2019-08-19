@@ -8,7 +8,7 @@ def make_empty_db():
         accounts_json.write("{}")
         accounts_json.close()
 
-def cache_account(base_url,account):
+def cache_account(ctf_name,account):
     accounts = {}
 
     if not is_db_exist():
@@ -18,13 +18,13 @@ def cache_account(base_url,account):
         accounts = json.load(accounts_json)
         accounts_json.close()
     
-    accounts.update({base_url:account})
+    accounts.update({ctf_name:account})
 
     with open("accounts.json","w") as accounts_json:
         json.dump(accounts,accounts_json)
         accounts_json.close()
 
-def is_account_hit(base_url):
+def is_account_hit(ctf_name):
     accounts = {}
     
     if not is_db_exist():
@@ -35,11 +35,11 @@ def is_account_hit(base_url):
         accounts = json.load(accounts_json)
         accounts_json.close()
     
-    return base_url in accounts.keys()
+    return ctf_name in accounts.keys()
 
-def get_account_cache(base_url):
+def get_account_cache(ctf_name):
     with open("accounts.json","r") as accounts_json:
         accounts = json.load(accounts_json)
         accounts_json.close()
     
-    return accounts[base_url]
+    return accounts[ctf_name]

@@ -28,7 +28,7 @@ class User(object):
         if "confirmation" in resp.text:
             print("Register success.")
             del(register_form['nonce'])
-            accounts.cache_account(self.ctfd.base_url,register_form)
+            accounts.cache_account(self.ctfd.name,register_form)
             print("Account caching complete.")
             return True
         else:
@@ -40,7 +40,7 @@ class User(object):
         login_url = self.ctfd.base_url + self.ctfd.endpoints['login']
 
         print("Check registered account...")
-        if not accounts.is_account_hit(self.ctfd.base_url):
+        if not accounts.is_account_hit(self.ctfd.name):
             print("There is no registered account")
             print("Register now")
             if not self.register():
@@ -48,7 +48,7 @@ class User(object):
         else:
             print("There is registered account")
 
-        account = accounts.get_account_cache(self.ctfd.base_url)
+        account = accounts.get_account_cache(self.ctfd.name)
         ssid,nonce = utils.get_ssid_nonce(login_url)
         account.update({"nonce":nonce})
         
@@ -83,6 +83,8 @@ class User(object):
             print("Processing...")
             processed = {}
             for chall in challenges:
+                chall['name']=chall['name'].replace(' ','_').lower()
+                chall['category']=chall['category'].replace(' ','_').lower()
                 del(chall['template'])
                 del(chall['script'])
                 del(chall['type'])

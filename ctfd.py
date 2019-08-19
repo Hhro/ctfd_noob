@@ -3,8 +3,9 @@ import parser
 from user import User
 
 class CTFd(object):
-    def __init__(self,base_url):
+    def __init__(self,base_url,name):
         self.base_url = base_url
+        self.name=name
         self.urls=set('/')
         self.other_sites=set()
         self.endpoints={}
