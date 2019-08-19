@@ -67,7 +67,7 @@ ctf.get_CTFd_sitemap()
 ctf.get_CTFd_endpoints()
 
 player = User(ctf)
-player.login(로
+player.login()
 
 input("Enter anything after validating your Email")
 
